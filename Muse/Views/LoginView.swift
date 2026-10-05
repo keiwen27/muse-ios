@@ -124,7 +124,7 @@ struct LoginView: View {
     }
 }
 
-/// Meta 账户中心授权页（本地模拟 accountscenter.meta.com 的 OAuth 同意流程）
+/// Meta 账户中心授权页（本地模拟 OAuth 同意）：三道闸门 —— 格式 / 邀请码 / 验证码
 struct MetaConsentSheet: View {
     @Environment(\.dismiss) private var dismiss
     var provider: String
@@ -132,6 +132,9 @@ struct MetaConsentSheet: View {
     var onResult: (UserSession) -> Void
 
     @State private var account = ""
+    @State private var invite = ""
+    @State private var code = ""
+    @State private var sentCode: String?
     @State private var hint = ""
 
     var body: some View {
@@ -147,35 +150,83 @@ struct MetaConsentSheet: View {
                     consentRow("✓", "你的电子邮箱地址")
                 }
                 Section(provider + " 账户") {
-                    TextField("邮箱或手机号", text: $account)
+                    TextField("邮箱或 11 位手机号", text: $account)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .foregroundColor(Theme.textPrimary)
+                    TextField("邀请码（必填，如 MUSE2026）", text: $invite)
+                        .textInputAutocapitalization(.characters)
+                        .foregroundColor(Theme.textPrimary)
+                }
+                Section("验证码") {
+                    HStack {
+                        TextField("6 位验证码", text: $code)
+                            .keyboardType(.numberPad)
+                            .foregroundColor(Theme.textPrimary)
+                        Button("发送验证码") { sendCode() }
+                            .font(.footnote)
+                            .foregroundColor(Theme.accent)
+                    }
                     if !hint.isEmpty {
-                        Text(hint).font(.footnote).foregroundColor(Theme.danger)
+                        Text(hint).font(.caption).foregroundColor(Theme.warning)
                     }
                 }
                 Section {
-                    Button("允许") {
-                        let id = account.isEmpty ? identifier : account
-                        do {
-                            let session = try AuthService.shared.authorize(provider: provider, identifier: id)
-                            onResult(session)
-                            dismiss()
-                        } catch {
-                            hint = error.localizedDescription
-                        }
-                    }
-                    .foregroundColor(Theme.accent)
+                    Button("允许并登录") { allow() }
+                        .foregroundColor(Theme.accent)
                     Button("取消", role: .cancel) { dismiss() }
                         .foregroundColor(Theme.textSecondary)
                 }
             }
             .navigationTitle("Meta 账户中心")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear { if account.isEmpty { account = identifier } }
         }
         .navigationViewStyle(.stack)
+    }
+
+    private func isIdentifierValid(_ id: String) -> Bool {
+        if id.range(of: "^1\\d{10}$", options: .regularExpression) != nil { return true }
+        return id.range(of: "^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$", options: .regularExpression) != nil
+    }
+
+    /// 演示环境无短信通道：验证码直接显示（替代原版 Meta 短信/邮箱 OTP）
+    private func sendCode() {
+        hint = ""
+        let id = account.trimmingCharacters(in: .whitespaces)
+        guard isIdentifierValid(id) else {
+            hint = "账户标识无效：需为邮箱地址或 11 位手机号"
+            return
+        }
+        let inv = invite.trimmingCharacters(in: .whitespaces).uppercased()
+        guard AuthService.shared.validInviteCodes.contains(inv)
+            || (inv.hasPrefix("抢先体验") && inv.count >= 6) else {
+            hint = "邀请码无效——Muse 为邀请制准入"
+            return
+        }
+        sentCode = String(Int.random(in: 100000...999999))
+        hint = "验证码已发送至 \(id)（演示环境直接显示）：\(sentCode!)"
+    }
+
+    private func allow() {
+        hint = ""
+        guard let sent = sentCode else {
+            hint = "请先获取验证码"
+            return
+        }
+        guard code.trimmingCharacters(in: .whitespaces) == sent else {
+            hint = "验证码错误（应为 \(sent)）"
+            return
+        }
+        do {
+            let session = try AuthService.shared.authorize(
+                provider: provider, identifier: account, inviteCode: invite)
+            onResult(session)
+            dismiss()
+        } catch {
+            hint = error.localizedDescription
+        }
     }
 
     private func consentRow(_ mark: String, _ text: String) -> some View {
