@@ -20,7 +20,7 @@ jobs:
       - name: Package unsigned IPA
         run: |
           mkdir -p Payload
-          cp -r build/Build/Products/Release-iphoneos/Muse.app Payload/
+          cp -r build/Release-iphoneos/Muse.app Payload/
           codesign --force --deep --sign - Payload/Muse.app || true
           zip -r Muse-unsigned.ipa Payload
 
