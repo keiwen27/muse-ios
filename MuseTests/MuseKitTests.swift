@@ -341,7 +341,9 @@ final class MuseKitTests: XCTestCase {
         let array = """
         [{"title":"来自旧助手","messages":[{"role":"user","text":"你好"},{"role":"agent","text":"在的"}]}]
         """
-        let r = try ImportService.importJSON(Data(array.utf8), into: store.data)
+        var d = store.data
+        let r = try ImportService.importJSON(Data(array.utf8), into: &d)
+        store.data = d
         XCTAssertEqual(r.conversations, 1, "应导入 1 个对话")
         let conv = store.data.conversations.first { $0.title == "来自旧助手" }
         XCTAssertNotNil(conv)
@@ -349,12 +351,15 @@ final class MuseKitTests: XCTestCase {
         XCTAssertEqual(conv?.messages.first?.role, .user)
 
         // 记忆迁移格式
-        let r2 = try ImportService.importJSON(Data(#"["我喜欢清晨跑步","咖啡不加糖"]"#.utf8), into: store.data)
+        var d2 = store.data
+        let r2 = try ImportService.importJSON(Data(#"["我喜欢清晨跑步","咖啡不加糖"]"#.utf8), into: &d2)
+        store.data = d2
         XCTAssertEqual(r2.memories, 2, "应导入 2 条迁移记忆")
         XCTAssertTrue(store.data.memories.allSatisfy { $0.source == "迁移导入" })
 
         // 非法格式应抛错
-        XCTAssertThrowsError(try ImportService.importJSON(Data("not-json".utf8), into: store.data))
+        var d3 = store.data
+        XCTAssertThrowsError(try ImportService.importJSON(Data("not-json".utf8), into: &d3))
     }
 
     func testS18ScheduledNetwork() async throws {
