@@ -229,13 +229,17 @@ struct OAuthConsentSheet: View {
     @State private var grantWrite = false
     @State private var grantSend = false
 
+    private var consentText: String {
+        connector.kind == "oauth"
+            ? "允许 Muse 在账户中心访问 \(connector.name)。授权后将签发访问令牌（本地模拟 OAuth 同意页）。"
+            : "即将以 API Key 接入 \(connector.name)。请确认该连接器需要的权限范围。"
+    }
+
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    Text(connector.kind == "oauth"
-                         ? "允许 Muse 在账户中心访问 \(connector.name)。授权后将签发访问令牌（本地模拟 OAuth 同意页）。"
-                         : "即将以 API Key 接入 \(connector.name)。请确认该连接器需要的权限范围。")
+                    Text(consentText)
                         .font(.footnote)
                         .foregroundColor(Theme.textSecondary)
                 }
