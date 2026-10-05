@@ -10,7 +10,7 @@ enum Theme {
     static let surface3     = Color(red: 38/255,  green: 43/255,  blue: 61/255)    // #262B3D
     static let border       = Color(red: 42/255,  green: 48/255,  blue: 68/255)    // #2A3044
     static let textPrimary  = Color(red: 242/255, green: 243/255, blue: 247/255)   // #F2F3F7
-    static let textSecondary= Color(red: 154/255, green: 160/255, blue: 180/255)   // #9AA0B4
+    static let textSecondary = Color(red: 154/255, green: 160/255, blue: 180/255)   // #9AA0B4
     static let danger       = Color(red: 1.0,   green: 92/255,  blue: 108/255)     // #FF5C6C
     static let success      = Color(red: 61/255,  green: 220/255, blue: 151/255)   // #3DDC97
     static let warning      = Color(red: 1.0,   green: 193/255, blue: 92/255)      // #FFC15C
