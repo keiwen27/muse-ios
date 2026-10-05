@@ -63,22 +63,28 @@ struct LockView: View {
     private func tick() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-            let s = AppStore.shared.data.settings
-            cooldownRemaining = PinService.cooldownRemaining(s)
-            let left = PinService.maxAttempts - s.pinFailedAttempts
-            hint = cooldownRemaining > 0
-                ? "尝试次数过多，已锁定 — 请等待 \(Int(cooldownRemaining)) 秒"
-                : (s.pinFailedAttempts > 0 ? "PIN 码错误。你还有 \(left) 次尝试机会。" : "")
+            Task { @MainActor in refresh() }
         }
     }
 
+    @MainActor
+    private func refresh() {
+        let s = AppStore.shared.data.settings
+        cooldownRemaining = PinService.cooldownRemaining(s)
+        let left = PinService.maxAttempts - s.pinFailedAttempts
+        hint = cooldownRemaining > 0
+            ? "尝试次数过多，已锁定 — 请等待 \(Int(cooldownRemaining)) 秒"
+            : (s.pinFailedAttempts > 0 ? "PIN 码错误。你还有 \(left) 次尝试机会。" : "")
+    }
+
+    @MainActor
     private func unlock() {
         guard cooldownRemaining <= 0 else { return }
         if PinService.verify(pin) {
             NotificationCenter.default.post(name: .museUnlocked, object: nil)
         } else {
             pin = ""
-            tick()
+            refresh()
         }
     }
 }
