@@ -47,9 +47,9 @@
 		AA00000000000000000000F0 /* Muse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA000000000000000000000E /* MuseKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MuseKitTests.swift; path = MuseKitTests.swift; sourceTree = "<group>"; };
 		AA000000000000000000000F /* PinAndMore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinAndMore.swift; sourceTree = "<group>"; };
-		AA0000000000000000000011 /* LockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockView.swift; sourceTree = "<group>"; };
-		AA0000000000000000000012 /* TtsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TtsService.swift; sourceTree = "<group>"; };
-		AA0000000000000000000013 /* SlidesAndMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesAndMap.swift; sourceTree = "<group>"; };
+		AA0000000000000000000025 /* LockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000026 /* TtsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TtsService.swift; sourceTree = "<group>"; };
+		AA0000000000000000000027 /* SlidesAndMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesAndMap.swift; sourceTree = "<group>"; };
 		AA00000000000000000000F1 /* MuseKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MuseKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -118,7 +118,7 @@
 				AA0000000000000000000005 /* AgentBackend.swift */,
 				AA0000000000000000000006 /* SpeechService.swift */,
 				AA000000000000000000000F /* PinAndMore.swift */,
-				AA0000000000000000000012 /* TtsService.swift */,
+				AA0000000000000000000026 /* TtsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -140,8 +140,8 @@
 				AA000000000000000000000B /* ConnectorsView.swift */,
 				AA000000000000000000000C /* SettingsView.swift */,
 				AA000000000000000000000D /* OnboardingView.swift */,
-				AA0000000000000000000011 /* LockView.swift */,
-				AA0000000000000000000013 /* SlidesAndMap.swift */,
+				AA0000000000000000000025 /* LockView.swift */,
+				AA0000000000000000000027 /* SlidesAndMap.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
