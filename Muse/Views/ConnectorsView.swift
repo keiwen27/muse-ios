@@ -229,30 +229,12 @@ struct OAuthConsentSheet: View {
     @State private var grantWrite = false
     @State private var grantSend = false
 
-    private var consentText: String {
-        connector.kind == "oauth"
-            ? "允许 Muse 在账户中心访问 \(connector.name)。授权后将签发访问令牌（本地模拟 OAuth 同意页）。"
-            : "即将以 API Key 接入 \(connector.name)。请确认该连接器需要的权限范围。"
-    }
-
     var body: some View {
         NavigationView {
             Form {
-                Section {
-                    Text(consentText)
-                        .font(.footnote)
-                        .foregroundColor(Theme.textSecondary)
-                }
-                Section("请求的权限范围") {
-                    Toggle("读取（读取相关数据作为任务上下文）", isOn: $grantRead)
-                    Toggle("写入和删除权限", isOn: $grantWrite)
-                    Toggle("自动发送（代你发送消息/邮件/内容）", isOn: $grantSend)
-                }
-                Section {
-                    Text("Meta 不会审核自定义连接器及其如何使用你的信息。智能体可能会执行非预期操作，请谨慎授权。")
-                        .font(.caption2)
-                        .foregroundColor(Theme.textSecondary)
-                }
+                introSection
+                scopeSection
+                footerSection
             }
             .navigationTitle("授权连接")
             .navigationBarTitleDisplayMode(.inline)
@@ -264,16 +246,54 @@ struct OAuthConsentSheet: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("授权并连接") {
-                        store.data.connectors.first { $0.id == connector.id }?.accessToken =
-                            "at_" + UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(24).lowercased()
-                        store.log("connector.consent", "\(connector.name) 已授权（\(grantRead ? "读取 " : "")\(grantWrite ? "写入 " : "")\(grantSend ? "发送" : "")", verdict: "用户确认")
-                        onResult(true)
-                        dismiss()
-                    }
+                    Button("授权并连接") { authorizeAndClose() }
                 }
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    private var introText: String {
+        if connector.kind == "oauth" {
+            return "允许 Muse 在账户中心访问 \(connector.name)。授权后将签发访问令牌（本地模拟 OAuth 同意页）。"
+        }
+        return "即将以 API Key 接入 \(connector.name)。请确认该连接器需要的权限范围。"
+    }
+
+    private var introSection: some View {
+        Section {
+            Text(introText)
+                .font(.footnote)
+                .foregroundColor(Theme.textSecondary)
+        }
+    }
+
+    private var scopeSection: some View {
+        Section("请求的权限范围") {
+            Toggle("读取（读取相关数据作为任务上下文）", isOn: $grantRead)
+            Toggle("写入和删除权限", isOn: $grantWrite)
+            Toggle("自动发送（代你发送消息/邮件/内容）", isOn: $grantSend)
+        }
+    }
+
+    private var footerSection: some View {
+        Section {
+            Text("Meta 不会审核自定义连接器及其如何使用你的信息。智能体可能会执行非预期操作，请谨慎授权。")
+                .font(.caption2)
+                .foregroundColor(Theme.textSecondary)
+        }
+    }
+
+    private func authorizeAndClose() {
+        let token = "at_" + UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(24).lowercased()
+        if let idx = store.data.connectors.firstIndex(where: { $0.id == connector.id }) {
+            store.data.connectors[idx].accessToken = String(token)
+        }
+        let scopes = [grantRead ? "读取" : "", grantWrite ? "写入" : "", grantSend ? "发送" : ""]
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+        store.log("connector.consent", "\(connector.name) 已授权（\(scopes)）", verdict: "用户确认")
+        onResult(true)
+        dismiss()
     }
 }
