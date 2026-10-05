@@ -43,20 +43,30 @@ final class MuseKitTests: XCTestCase {
 
     // MARK: 场景
 
-    func testS01AccountRegisterLoginLogout() async throws {
+    func testS01AccountGates() async throws {
         let dir = tempDir("s01")
         let auth = AuthService(dataDir: dir)
 
-        let session = try auth.authorize(provider: "Meta", identifier: "alice@muse.ai")
-        try check(auth.current?.token == session.token, "注册后应持有会话")
+        // ① 空标识应拒绝
+        XCTAssertThrowsError(try auth.authorize(provider: "Meta", identifier: "  ", inviteCode: "MUSE2026"), "空账户标识应被拒绝")
+        // ② 格式无效应拒绝
+        XCTAssertThrowsError(try auth.authorize(provider: "Meta", identifier: "not-an-account", inviteCode: "MUSE2026"), "格式无效的标识应被拒绝")
+        // ③ 无效邀请码应拒绝
+        XCTAssertThrowsError(try auth.authorize(provider: "Meta", identifier: "alice@muse.ai", inviteCode: "BAD-CODE"), "无效邀请码应被拒绝")
+
+        // ④ 邀请码 + 合法标识 → 授权成功
+        let session = try auth.authorize(provider: "Meta", identifier: "alice@muse.ai", inviteCode: "MUSE2026")
+        try check(auth.current?.token == session.token, "授权后应持有会话")
+        try check(session.displayName == "alice", "显示名应取自邮箱前缀")
 
         auth.logout()
         try check(auth.current == nil, "登出后会话应为空")
 
-        // 授权制：同一账户再次授权免密（OIDC 授权语义），无密码校验
-        let again = try auth.authorize(provider: "Meta", identifier: "alice@muse.ai")
+        // ⑤ 再次授权免密（OIDC 授权语义）
+        let again = try auth.authorize(provider: "Meta", identifier: "alice@muse.ai", inviteCode: "MUSE2026")
         try check(again.token.count > 8, "再次授权应获得新会话令牌")
 
+        // ⑥ 会话恢复
         let auth2 = AuthService(dataDir: dir)
         try check(auth2.current?.email == "alice@muse.ai", "重启后应恢复未过期会话")
     }
