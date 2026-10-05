@@ -72,7 +72,7 @@ final class SpeechService: NSObject {
         guard status == .authorized, let recognizer = SFSpeechRecognizer() else { return nil }
 
         return await withCheckedContinuation { cont in
-            guard let request = try? SFSpeechURLRecognitionRequest(contentsOf: url) else {
+            guard let request = try? SFSpeechURLRecognitionRequest(url: url) else {
                 cont.resume(returning: nil)
                 return
             }
