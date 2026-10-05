@@ -84,21 +84,8 @@ struct TasksScreen: View {
             }
         }
         .navigationViewStyle(.stack)
-        .onAppear { seedIfNeeded() }
     }
 
-    private func seedIfNeeded() {
-        guard store.data.tasks.isEmpty else { return }
-        store.data.tasks.append(AgentTask(
-            title: "每周摘要邮件",
-            summary: "每周五 17:00 汇总本周笔记与日历，草拟摘要邮件（发送前需批准）",
-            risk: "medium", isScheduled: true, scheduleHint: "每周五 17:00"))
-        store.data.tasks.append(AgentTask(
-            title: "购物比价",
-            summary: "比较「降噪耳机」价格，低于 ¥899 时请求批准下单（一次性虚拟信用卡）",
-            risk: "high", isScheduled: true, scheduleHint: "每天 10:00"))
-        store.save()
-    }
 }
 
 struct TaskRow: View {
