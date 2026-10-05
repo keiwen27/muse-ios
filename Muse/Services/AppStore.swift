@@ -205,7 +205,9 @@ final class AppStore: ObservableObject {
 
     func submitTicket(category: String, description: String) -> SupportTicket? {
         guard !description.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
-        let t = TicketService.submit(data, category: category, description: description)
+        var d = data
+        let t = TicketService.submit(&d, category: category, description: description)
+        data = d
         save()
         return t
     }
@@ -337,13 +339,10 @@ enum ExportService {
         lines.append("")
         for m in conv.messages {
             let who = m.role == .user ? "我" : (m.role == .agent ? "Muse" : "系统")
-            lines.append("**\(who)**：\(m.text.replacingOccurrences(of: "
-", with: "  
-"))")
+            lines.append("**\(who)**：\(m.text.replacingOccurrences(of: "\n", with: "  "))")
             lines.append("")
         }
-        try? Data(lines.joined(separator: "
-").utf8).write(to: url)
+        try? Data(lines.joined(separator: "\n").utf8).write(to: url)
         return url
     }
 
