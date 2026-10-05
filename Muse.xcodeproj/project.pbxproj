@@ -222,6 +222,7 @@
 				};
 			};
 			buildConfigurationList = AA00000000000000000000B2 /* Build configuration list for PBXProject "Muse" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = zh_CN;
 			hasScannedForEncodings = 0;
 			knownRegions = (
