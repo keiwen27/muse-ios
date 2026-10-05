@@ -80,10 +80,27 @@ final class AuthService {
     }
 
     // MARK: 账户中心授权（对齐 OIDC 授权 + 会话引导）：标识为邮箱或手机号，无密码
+    // 两道闸门：① 标识格式（邮箱/11 位手机号） ② 邀请码（原版邀请制准入）
 
-    func authorize(provider: String, identifier: String) throws -> UserSession {
+    private let emailRegex = try! NSRegularExpression(pattern: "^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$")
+    private let phoneRegex = try! NSRegularExpression(pattern: "^1\\d{10}$")
+
+    private func isIdentifierValid(_ id: String) -> Bool {
+        let range = NSRange(id.startIndex..., in: id)
+        return phoneRegex.firstMatch(in: id, range: range) != nil
+            || emailRegex.firstMatch(in: id, range: range) != nil
+    }
+
+    func authorize(provider: String, identifier: String, inviteCode: String) throws -> UserSession {
         let identifier = identifier.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard !identifier.isEmpty else { throw AuthError(message: "请输入你的 Meta 账户（邮箱或手机号）") }
+        guard isIdentifierValid(identifier) else {
+            throw AuthError(message: "账户标识无效：需为邮箱地址或 11 位手机号")
+        }
+        let invite = inviteCode.trimmingCharacters(in: .whitespaces).uppercased()
+        guard validInviteCodes.contains(invite)
+            || (invite.hasPrefix("抢先体验") && invite.count >= 6) else {
+            throw AuthError(message: "邀请码无效——Muse 为邀请制准入。你可以在官网申请加入等候名单。")
+        }
         let user: UserRecord
         if var existing = store.users.first(where: { $0.identifier == identifier }) {
             existing.provider = provider
