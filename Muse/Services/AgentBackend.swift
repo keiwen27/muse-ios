@@ -95,8 +95,8 @@ final class LocalAgentBackend: AgentBackend {
                     if let what = Self.commandArg(in: text, prefixes: ["提醒我：", "提醒我:"]) {
                         yield(.tool(name: "reminder.add", detail: what))
                         let task = AgentTask(title: "创建提醒", summary: what,
-                                             risk: "low", action: .reminderAdd,
-                                             actionPayload: what, state: .waitingApproval)
+                                             risk: "low", state: .waitingApproval,
+                                             action: .reminderAdd, actionPayload: what)
                         store.data.tasks.append(task)
                         store.save()
                         yield(.approvalRequest(title: task.title, summary: "创建提醒：「\(what)」", risk: "low"))
@@ -155,8 +155,8 @@ final class LocalAgentBackend: AgentBackend {
                             return
                         }
                         let task = AgentTask(title: "发送邮件给 \(to)", summary: body, risk: "medium",
-                                             action: .mailSend, actionPayload: "\(to)|\(body)",
-                                             state: .waitingApproval)
+                                             state: .waitingApproval,
+                                             action: .mailSend, actionPayload: "\(to)|\(body)")
                         store.data.tasks.append(task)
                         store.save()
                         yield(.tool(name: "mail.draft", detail: "收件人 \(to)"))
