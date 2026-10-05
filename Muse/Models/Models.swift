@@ -133,7 +133,7 @@ struct Conversation: Codable, Identifiable {
     var favorite = false
 }
 
-struct AgentTask: Codable, Identifiable {
+struct AgentTask: Codable, Identifiable, Equatable {
     var id = UUID()
     var title: String
     var summary: String
