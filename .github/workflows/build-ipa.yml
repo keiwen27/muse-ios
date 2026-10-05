@@ -15,7 +15,7 @@ jobs:
           xcodebuild -project Muse.xcodeproj -target Muse \
             -configuration Release -sdk iphoneos \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" \
-            -derivedDataPath build build
+            SYMROOT="$(pwd)/build" build
 
       - name: Package unsigned IPA
         run: |
