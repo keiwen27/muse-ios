@@ -23,9 +23,13 @@
 		AA0000000000000000000021 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000020 /* Assets.xcassets */; };
 		AA000000000000000000001E /* MuseKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000000E /* MuseKitTests.swift */; };
 		AA000000000000000000001F /* PinAndMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000000F /* PinAndMore.swift */; };
-		AA0000000000000000000022 /* LockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000011 /* LockView.swift */; };
-		AA0000000000000000000023 /* TtsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000012 /* TtsService.swift */; };
-		AA0000000000000000000024 /* SlidesAndMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000013 /* SlidesAndMap.swift */; };
+		AA0000000000000000000022 /* LockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000025 /* LockView.swift */; };
+		AA0000000000000000000023 /* TtsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000026 /* TtsService.swift */; };
+		AA0000000000000000000024 /* SlidesAndMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000027 /* SlidesAndMap.swift */; };
+		AA0000000000000000000029 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000028 /* AuthService.swift */; };
+		AA000000000000000000002B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000002A /* LoginView.swift */; };
+		AA000000000000000000002D /* BillingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000002C /* BillingView.swift */; };
+		AA000000000000000000002F /* VoiceCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000002E /* VoiceCallView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +54,10 @@
 		AA0000000000000000000025 /* LockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000026 /* TtsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TtsService.swift; sourceTree = "<group>"; };
 		AA0000000000000000000027 /* SlidesAndMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlidesAndMap.swift; sourceTree = "<group>"; };
+		AA0000000000000000000028 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		AA000000000000000000002A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		AA000000000000000000002C /* BillingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingView.swift; sourceTree = "<group>"; };
+		AA000000000000000000002E /* VoiceCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCallView.swift; sourceTree = "<group>"; };
 		AA00000000000000000000F1 /* MuseKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MuseKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -119,6 +127,7 @@
 				AA0000000000000000000006 /* SpeechService.swift */,
 				AA000000000000000000000F /* PinAndMore.swift */,
 				AA0000000000000000000026 /* TtsService.swift */,
+				AA0000000000000000000028 /* AuthService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -142,6 +151,9 @@
 				AA000000000000000000000D /* OnboardingView.swift */,
 				AA0000000000000000000025 /* LockView.swift */,
 				AA0000000000000000000027 /* SlidesAndMap.swift */,
+				AA000000000000000000002A /* LoginView.swift */,
+				AA000000000000000000002C /* BillingView.swift */,
+				AA000000000000000000002E /* VoiceCallView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -278,6 +290,14 @@
 				AA000000000000000000001B /* ConnectorsView.swift in Sources */,
 				AA000000000000000000001C /* SettingsView.swift in Sources */,
 				AA000000000000000000001D /* OnboardingView.swift in Sources */,
+				AA000000000000000000001F /* PinAndMore.swift in Sources */,
+				AA0000000000000000000022 /* LockView.swift in Sources */,
+				AA0000000000000000000023 /* TtsService.swift in Sources */,
+				AA0000000000000000000024 /* SlidesAndMap.swift in Sources */,
+				AA0000000000000000000029 /* AuthService.swift in Sources */,
+				AA000000000000000000002B /* LoginView.swift in Sources */,
+				AA000000000000000000002D /* BillingView.swift in Sources */,
+				AA000000000000000000002F /* VoiceCallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
