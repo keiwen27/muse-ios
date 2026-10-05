@@ -2,6 +2,7 @@ import Foundation
 import CryptoKit
 
 /// PIN 应用锁（对齐原版：4-6 位、错误 3 次锁定 60 秒冷却、可更改；E2E 可注入设置对象）
+@MainActor
 enum PinService {
     static let maxAttempts = 3
     static let cooldown: TimeInterval = 60
@@ -19,7 +20,7 @@ enum PinService {
     }
 
     static func setPin(_ pin: String, settings: MuseSettings? = nil) {
-        let s = settings ?? AppStore.shared.data.settings
+        var s = settings ?? AppStore.shared.data.settings
         let salt = newSalt()
         s.pinEnabled = true
         s.pinSalt = salt
@@ -30,7 +31,7 @@ enum PinService {
     }
 
     static func disable(settings: MuseSettings? = nil) {
-        let s = settings ?? AppStore.shared.data.settings
+        var s = settings ?? AppStore.shared.data.settings
         s.pinEnabled = false
         s.pinHash = ""; s.pinSalt = ""
         s.pinFailedAttempts = 0
@@ -41,7 +42,7 @@ enum PinService {
     /// 验证；成功返回 true，失败累计错误（3 次进入冷却）
     @discardableResult
     static func verify(_ pin: String, settings: MuseSettings? = nil) -> Bool {
-        let s = settings ?? AppStore.shared.data.settings
+        var s = settings ?? AppStore.shared.data.settings
         guard s.pinEnabled else { return true }
         if isLockedOut(s) { return false }
         if hash(pin, salt: s.pinSalt) == s.pinHash {
@@ -88,7 +89,7 @@ enum ImportService {
         var text: String?
     }
 
-    static func importJSON(_ raw: Data, into data: MuseData) throws -> ImportResult {
+    static func importJSON(_ raw: Data, into data: inout MuseData) throws -> ImportResult {
         var result = ImportResult(conversations: 0, memories: 0)
         if let list = try? JSONDecoder().decode([ImportedConversation].self, from: raw) {
             for c in list {
@@ -119,7 +120,7 @@ enum ImportService {
 /// 帮助工单（对齐 hatch-api /help_ticket 的本地实现）
 enum TicketService {
     @discardableResult
-    static func submit(_ data: MuseData, category: String, description: String) -> SupportTicket {
+    static func submit(_ data: inout MuseData, category: String, description: String) -> SupportTicket {
         let ticket = SupportTicket(category: category, description: description, status: "已提交（本地工单）")
         data.tickets.insert(ticket, at: 0)
         data.audit.insert(AuditEntry(tool: "help.ticket", detail: "[\(ticket.id)] \(category)"), at: 0)
