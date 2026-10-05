@@ -386,7 +386,9 @@ struct SettingsScreen: View {
                     defer { if secured { url.stopAccessingSecurityScopedResource() } }
                     do {
                         let raw = try Data(contentsOf: url)
-                        let r = try ImportService.importJSON(raw, into: store.data)
+                        var d = store.data
+                        let r = try ImportService.importJSON(raw, into: &d)
+                        store.data = d
                         store.save()
                         exportMessage = "导入成功：\(r.conversations) 个对话、\(r.memories) 条记忆。"
                     } catch {
