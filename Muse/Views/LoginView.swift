@@ -102,8 +102,6 @@ struct LoginView: View {
         .sheet(isPresented: $showConsent) {
             MetaConsentSheet(provider: provider, identifier: identifier) { session in
                 store.data.session = session
-                store.data.subscription.transactions.insert(
-                    QuotaTransaction(kind: "赠送", credits: 20, note: "新用户授权奖励"), at: 0)
                 store.save()
             }
         }
