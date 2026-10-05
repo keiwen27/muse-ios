@@ -1,0 +1,31 @@
+name: Build Muse IPA (unsigned · for TrollStore)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build unsigned .app
+        run: |
+          cd Muse
+          xcodebuild -project Muse.xcodeproj -target Muse \
+            -configuration Release -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" \
+            -derivedDataPath build build
+
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/Muse.app Payload/
+          codesign --force --deep --sign - Payload/Muse.app || true
+          zip -r Muse-unsigned.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Muse-unsigned-ipa
+          path: Muse-unsigned.ipa

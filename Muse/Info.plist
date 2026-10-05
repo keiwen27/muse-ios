@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>zh_CN</string>
+	<key>CFBundleDisplayName</key>
+	<string>Muse</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>6.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string></string>
+	</dict>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<!-- 权限用途描述（对齐 macOS 版文案语义，见 docs/DESIGN.md §1.4） -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Muse 使用你的麦克风进行语音输入与语音通话</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Muse 使用语音识别来转写你的语音消息</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Muse 同步你的照片和视频，用于内容理解和媒体编辑</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Muse 需要将生成的图片保存到你的照片图库</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Muse 使用你的相机在你要求时拍摄照片</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Muse 使用你的位置提供与你所在位置相关的信息和功能</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Muse 读取你的日历活动，为智能体提供日程上下文</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Muse 读取你的提醒事项，为智能体提供待办上下文</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Muse 读取并更新你的通讯录，以便智能体查找和管理你的人脉</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+</plist>
