@@ -47,17 +47,15 @@ final class MuseKitTests: XCTestCase {
         let dir = tempDir("s01")
         let auth = AuthService(dataDir: dir)
 
-        let session = try auth.register(email: "alice@muse.ai", password: "secret6", inviteCode: nil)
+        let session = try auth.authorize(provider: "Meta", identifier: "alice@muse.ai")
         try check(auth.current?.token == session.token, "注册后应持有会话")
 
         auth.logout()
         try check(auth.current == nil, "登出后会话应为空")
 
-        XCTAssertThrowsError(try auth.login(email: "alice@muse.ai", password: "wrong-password"), "错误密码应被拒绝")
-        XCTAssertThrowsError(try auth.register(email: "alice@muse.ai", password: "secret6", inviteCode: nil), "重复注册应被拒绝")
-
-        let again = try auth.login(email: "alice@muse.ai", password: "secret6")
-        try check(again.token.count > 8, "重新登录应获得新会话令牌")
+        // 授权制：同一账户再次授权免密（OIDC 授权语义），无密码校验
+        let again = try auth.authorize(provider: "Meta", identifier: "alice@muse.ai")
+        try check(again.token.count > 8, "再次授权应获得新会话令牌")
 
         let auth2 = AuthService(dataDir: dir)
         try check(auth2.current?.email == "alice@muse.ai", "重启后应恢复未过期会话")
@@ -74,13 +72,13 @@ final class MuseKitTests: XCTestCase {
         let raw = try String(contentsOf: dir.appendingPathComponent("auth.json"), encoding: .utf8)
         try check(raw.contains("waitlist@muse.ai"), "等候名单应包含邮箱")
 
-        let s = try auth.register(email: "bob@muse.ai", password: "secret6", inviteCode: "ENDO-VIP")
+        let s = try auth.authorize(provider: "Meta", identifier: "bob@muse.ai")
         try check(s.inviteRedeemed, "使用邀请码注册后应标记已兑换")
     }
 
     func testS03ChatStreamWithRole() async throws {
         let (store, auth, backend) = makeEnv("s03")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         var conv = Conversation(role: .research)
         conv.role = .research
@@ -102,7 +100,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS04ReminderApprovalFlow() async throws {
         let (store, auth, backend) = makeEnv("s04")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -123,7 +121,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS05NoteCommand() async throws {
         let (store, auth, backend) = makeEnv("s05")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -140,7 +138,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS06PhotoSearch() async throws {
         let (store, auth, backend) = makeEnv("s06")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -153,7 +151,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS07CalendarConnectorGate() async throws {
         let (store, auth, backend) = makeEnv("s07")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -172,7 +170,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS08MailApprovalFlow() async throws {
         let (store, auth, backend) = makeEnv("s08")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -195,7 +193,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS09BrowserTaskFullFlow() async throws {
         let (store, auth, backend) = makeEnv("s09")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -225,7 +223,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS10QuotaAndBilling() async throws {
         let (store, auth, backend) = makeEnv("s10")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -251,7 +249,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS11Export() async throws {
         let (store, auth, backend) = makeEnv("s11")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -269,7 +267,7 @@ final class MuseKitTests: XCTestCase {
         let dir = tempDir("s12")
         let store = AppStore(dataDir: dir)
         let auth = AuthService(dataDir: dir)
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         var conv = Conversation()
         conv.title = "持久化测试会话"
@@ -304,7 +302,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS15Memory() async throws {
         let (store, auth, backend) = makeEnv("s15m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -321,7 +319,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS16AbReply() async throws {
         let (store, auth, backend) = makeEnv("s16m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -364,7 +362,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS18ScheduledNetwork() async throws {
         let (store, auth, backend) = makeEnv("s18m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -385,7 +383,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS19Products() async throws {
         let (store, auth, backend) = makeEnv("s19m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -401,7 +399,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS20Scopes() async throws {
         let (store, auth, backend) = makeEnv("s20m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -445,9 +443,9 @@ final class MuseKitTests: XCTestCase {
     func testS23MultiAccount() throws {
         let dir = tempDir("s23")
         let auth = AuthService(dataDir: dir)
-        try auth.register(email: "a@muse.ai", password: "secret6", inviteCode: nil)
-        try auth.register(email: "b@muse.ai", password: "secret6", inviteCode: nil)  // a 的会话保留
-        _ = try auth.login(email: "b@muse.ai", password: "secret6")
+        try auth.authorize(provider: "Meta", identifier: "a@muse.ai")
+        try auth.authorize(provider: "Facebook", identifier: "b@muse.ai")  // a 的会话保留
+        _ = try auth.authorize(provider: "Meta", identifier: "b@muse.ai")
         XCTAssertEqual(auth.current?.email, "b@muse.ai")
         XCTAssertTrue(auth.registeredAccounts.contains("a@muse.ai"), "设备账户列表应含 a")
         XCTAssertTrue(auth.registeredAccounts.contains("b@muse.ai"), "设备账户列表应含 b")
@@ -461,7 +459,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS24AgeGate() async throws {
         let (store, auth, backend) = makeEnv("s24m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         store.data.settings.ageVerified = false
         let conv = Conversation()
@@ -481,7 +479,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS25Slides() async throws {
         let (store, auth, backend) = makeEnv("s25m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -503,7 +501,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS26Podcast() async throws {
         let (store, auth, backend) = makeEnv("s26m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
@@ -524,7 +522,7 @@ final class MuseKitTests: XCTestCase {
 
     func testS27MapQuery() async throws {
         let (store, auth, backend) = makeEnv("s27m")
-        try auth.register(email: "e2e@muse.ai", password: "secret6", inviteCode: "MUSE2026")
+        try auth.authorize(provider: "Meta", identifier: "e2e@muse.ai")
         store.data.session = auth.current
         let conv = Conversation()
         store.data.conversations.append(conv)
