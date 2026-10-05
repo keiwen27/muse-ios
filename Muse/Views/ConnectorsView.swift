@@ -220,6 +220,7 @@ private extension ConnectorRow {
 
 /// OAuth/API Key 授权同意页（对齐原版「允许…在账户中心访问…」+ 权限范围选择）
 struct OAuthConsentSheet: View {
+    @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
     var connector: Connector
     var onResult: (Bool) -> Void
