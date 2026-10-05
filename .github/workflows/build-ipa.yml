@@ -11,7 +11,6 @@ jobs:
 
       - name: Build unsigned .app
         run: |
-          cd Muse
           xcodebuild -project Muse.xcodeproj -target Muse \
             -configuration Release -sdk iphoneos \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" \
